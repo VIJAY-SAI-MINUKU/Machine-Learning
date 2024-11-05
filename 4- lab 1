@@ -1,0 +1,131 @@
+EXP8:Build apolynomial regressionmodel for predicting the salary of the
+ employees.
+ Definition: Polynomial regression is a form of regression analysis that
+ models the relationship between the independent variable(s) and the
+ dependent variable as an nthnth-degree polynomial. It is used when the
+ data does not folow a linear relationship, and instead shows a non-linear
+ pattern. The model extends linear regression by adding powers of the
+ input features (e.g., x2,x3,… x2,x3,… ).
+ Polynomial Regression Equation:
+ The general formofthepolynomial regressionmodel is:
+ y=β0+β1⋅x+β2⋅x2+⋯+βn⋅xn
+ y=β0 +β1 ⋅x+β2 ⋅x2+⋯+βn ⋅xn
+ Where:
+ yyis thedependent variable(e.g., salary),
+ xx is theindependent variable (e.g., position level),
+β0,β1,… ,βnβ0 ,β1 ,… ,βn are the coefficients (weights) that the
+ modellearns,
+ nnis the degree of the polynomial (decides how complex the curve can
+ be).
+ Key Points:
+ Non-Linear Relationship: Polynomial regression captures non-linear
+ relationships between the variables. Unlike linear regression (which fits a
+ straight line), polynomial regression fits a curved line.
+ Degree of the Polynomial: The degree (or power) of the polynomial
+ decides the flexibility of the curve. A higher degree allows for more
+ complexcurves butcanalsolead tooverfitting if the degreeis too high.
+ Degree 1: This is simple linearregression.
+ Degree 2: Themodel capturesaquadraticrelationship(parabola).
+ Degree 3+: Higher degrees capturemoreintricate curves.
+ Transformation of Features: The key concept behind polynomial
+ regression is transforming the input features into polynomial features. For
+ example, for an input feature xx, we create new features x2,x3,… x2,x3,… ,
+ and thenapply a linear regression model tothesetransformed features.
+ Overfitting vs Underfitting:
+ Underfitting: When the model is too simple (low degree), it fails to
+ capture the data's pattern and performs poorly.
+ Overfitting: When the degree is too high, the model may fit the
+ training data too closely, leading to poor generalization on unseen data.
+ UseCases:
+ Predicting Salaries Based on Experience: Polynomial regression can
+ modelthenon-linear increase in salaries with years of experience.
+Stock Price Prediction: Stock prices often follow complex trends that
+ can be better captured with polynomial regression compared to linear
+ regression.
+ Growth Models: Biological or financial data where the growth is not
+ strictly linear but follows a more complex pattern.
+ Advantages:
+ Captures non-linear relationships in the data that cannot be represented
+ bylinear models.
+ Relatively simple to implement bytransforming features.
+ Disadvantages:
+ Sensitive to overfitting if the degree of the polynomial is toohigh.
+ Interpretation of the model becomes more complex as the degree
+ increases.
+ Visual Example:
+ Linear Regression fits a straight line, which might not be able to capture
+ all data points well if the relationship is not linear.
+ Polynomial Regression fits a curve that can closely follow the actual
+ distribution of the data, improving accuracy.
+ #Import necessarylibraries
+ import numpyasnp
+ import pandasaspd
+ import matplotlib.pyplot as plt
+ fromsklearn.linear_model import LinearRegression
+ fromsklearn.preprocessing import PolynomialFeatures
+ fromsklearn.metricsimport mean_squared_error, r2_score
+Step 2: Createa Dataset(or use your own)
+ #For this example, let's assume we have a dataset with two columns:
+ "Position Level" and "Salary."
+ #Createasimple dataset
+ data ={
+ 'Position Level': [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+ 'Salary': [45000, 50000, 60000, 80000, 110000, 150000, 200000,
+ 300000, 500000, 1000000]
+ }
+ df =pd.DataFrame(data)
+ #Here, "Position Level" is the independent variable, and "Salary" is the
+ dependent variable.
+ #Split the data into independent(X) anddependent (y) variables
+ X=df[['Position Level']].values
+ y =df['Salary'].values
+ #Before building the polynomial regression model, we can fit a simple
+ linear regression model forcomparison.
+ #SimpleLinear Regression Model
+ linear_reg = LinearRegression()
+ linear_reg.fit(X, y)
+#Predict using the Linear Regression model
+ y_pred_linear = linear_reg.predict(X)
+ #Visualize the linearregression results
+ plt.scatter(X, y, color='red')
+ plt.plot(X, y_pred_linear, color='blue')
+ plt.title('Linear Regression')
+ plt.xlabel('Position Level')
+ plt.ylabel('Salary')
+ plt.show()
+ #Now, we'll create a polynomial regression model by transforming the
+ original features into polynomial features.
+ #Createpolynomial features (e.g., degree 4)
+ poly_features = PolynomialFeatures(degree=4)
+ X_poly= poly_features.fit_transform(X)
+ #Fit thepolynomial regressionmodel
+ poly_reg = LinearRegression()
+ poly_reg.fit(X_poly, y)
+ #Predict using the Polynomial Regressionmodel
+ y_pred_poly = poly_reg.predict(X_poly)
+#Visualize the Polynomial Regression results
+ plt.scatter(X, y, color='red')
+ plt.plot(X, y_pred_poly, color='blue')
+ plt.title('Polynomial Regression (Degree 4)')
+ plt.xlabel('Position Level')
+ plt.ylabel('Salary')
+ plt.show()
+ #You can evaluate the performance of both the linear and polynomial
+ modelsusing MeanSquaredError(MSE)and R-squared (R²).
+ #Linearmodel evaluation
+ mse_linear = mean_squared_error(y, y_pred_linear)
+ r2_linear = r2_score(y, y_pred_linear)
+ #Polynomial model evaluation
+ mse_poly =mean_squared_error(y,y_pred_poly)
+ r2_poly =r2_score(y, y_pred_poly)
+ print(f"Linear Regression- MSE: {mse_linear}, R²: {r2_linear}")
+ print(f"Polynomial Regression- MSE: {mse_poly}, R²: {r2_poly}")
+ Results:
+ Linear Regression
+ :
+ MeanSquaredError(MSE): 26,695,878,787.88
+ R-squared (R²): 0.669
+Polynomial Regression (Degree 4)
+ :
+ MeanSquaredError(MSE): 210,343,822.84
+ R-squared (R²): 0.997
