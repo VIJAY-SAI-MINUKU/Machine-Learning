@@ -1,0 +1,265 @@
+ Problem: Implement CART algorithm for decision tree learning.
+ 
+ Use an appropriate data set for building the decision tree and
+ apply this knowledge to classify a new sample. Explore the
+ problem of overfitting in decision tree and develop solution
+ using pruning technique.
+ Descriptive Explanation of CARTAlgorithm for Implementation
+ Classification and Regression Trees (CART) is a popular machine learning
+ algorithm used for classification and regression tasks. This algorithm
+ builds a decision tree that is used to predict the value of a target variable
+ bylearning simple decision rulesinferred from the data features.
+Key Conceptsof CART
+ Decision Tree Structure:
+ A decision tree is a flowchart-like structure where an internal node
+ represents a feature (or attribute), the branch represents a decision rule,
+ and eachleafnoderepresents the outcome(label).
+ Thetopmost nodeinadecisiontreeisthe root node.
+ Splitting Criteria:
+ Classification: CART uses the Gini impurity or entropy (information
+ gain) as thecriterion to split the nodes.
+ Regression: It uses variance reduction ormean squared error.
+ Gini Impurity:
+ Gini impurity measures the frequency of a randomly chosen element
+ being incorrectly labeled if it was randomly labeled according to the
+ distribution of labels in the subset.
+ Formula: Gini(D)=1− ∑ i=1n(pi)2Gini(D)=1− ∑ i=1n (pi )2 where
+ pipi 
+class.
+ is the probability of an element being classified for a particular
+ Tree Pruning:
+ Pre-pruning (Early Stopping): Limits the tree's growth by setting
+ constraints like maximumdepth, minimumsamplesperleaf, etc.
+ Post-pruning: Removes parts of thetreethat provide little power.
+ Step-by-Step Implementation
+ Import Libraries
+ Load andExplore theDataset
+ Preprocess Data
+ Train-Test Split
+ Train CARTDecisionTree
+ Evaluate Model
+ AddressOverfitting with Pruning
+1. Import Libraries
+ python
+ import pandasaspd
+ import numpyasnp
+ fromsklearn.model_selectionimport train_test_split
+ fromsklearn.tree import DecisionTreeClassifier
+ from sklearn.metrics import accuracy_score, confusion_matrix,
+ classification_report
+ fromsklearn.datasets import load_iris
+ import matplotlib.pyplot as plt
+ fromsklearn.tree import plot_tree
+ 2. LoadandExplore theDataset
+ For this example, we'll use the Iris dataset, which is a classic dataset for
+ classification tasks.
+ python
+ #Loadthe dataset
+ iris = load_iris()
+ X=pd.DataFrame(iris.data,columns=iris.feature_names)
+ y =pd.Series(iris.target)
+ #Displaythe first fewrows of thedataset
+ print(X.head())
+ print(y.head())
+ 3. Preprocess Data
+ The Irisdataset is already cleanand does notrequiremuch preprocessing.
+ 4. Train-Test Split
+ Split the data into training and testing sets.
+python
+ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3,
+ random_state=42)
+ 5. Train CARTDecision Tree
+ Train a decisiontree classifier using the CART algorithm.
+ python
+ #Initialize the decision tree classifier
+ cart_model = DecisionTreeClassifier(random_state=42)
+ #Trainthe classifier
+ cart_model.fit(X_train, y_train)
+ 6. Evaluate Model
+ Evaluate the performanceof the trainedmodel onthe test set.
+ python
+ #Makepredictionsonthetestset
+ y_pred = cart_model.predict(X_test)
+ #Evaluatetheaccuracy
+ accuracy =accuracy_score(y_test,y_pred)
+ print(f'Accuracy: {accuracy:.2f}')
+ #Confusion matrix
+ conf_matrix = confusion_matrix(y_test, y_pred)
+ print('Confusion Matrix:')
+ print(conf_matrix)
+#Classification report
+ class_report = classification_report(y_test, y_pred)
+ print('Classification Report:')
+ print(class_report)
+ 7. Visualize the Decision Tree
+ Visualize the decision tree to understand its structure.
+ python
+ plt.figure(figsize=(20,10))
+ plot_tree(cart_model, fi led=True, feature_names=iris.feature_names,
+ class_names=iris.target_names)
+ plt.show()
+ Address Overfitting with Pruning
+ Overfitting is a common problem with decision trees, where the model
+ becomes too complex and captures noise in the data. Pruning helps to
+ reduce overfitting by limiting the tree's depth or the number of samples
+ required to split a node.
+ Pruning Techniques:
+ Pre-pruning (Early Stopping):
+ Limit the maximumdepthofthetree.
+ Set the minimumnumberofsamplesrequiredto splita node.
+ Set the minimumnumberofsamplesrequiredto be ataleafnode.
+ Post-pruning:
+ Prune the tree after it has been built by removing nodes that provide
+ little power.
+ Let's use pre-pruning techniques:
+python
+ #Initialize the decision tree classifier with pre-pruning
+ pruned_cart_model = DecisionTreeClassifier(random_state=42,
+ max_depth=3, min_samples_split=4, min_samples_leaf=2)
+ #Trainthe classifier
+ pruned_cart_model.fit(X_train, y_train)
+ #Makepredictionsonthetestset
+ y_pruned_pred = pruned_cart_model.predict(X_test)
+ #Evaluatetheaccuracy
+ pruned_accuracy = accuracy_score(y_test, y_pruned_pred)
+ print(f'Pruned Accuracy: {pruned_accuracy:.2f}')
+ #Confusion matrix
+ pruned_conf_matrix =confusion_matrix(y_test, y_pruned_pred)
+ print('Pruned Confusion Matrix:')
+ print(pruned_conf_matrix)
+ #Classification report
+ pruned_class_report = classification_report(y_test, y_pruned_pred)
+ print('Pruned Classification Report:')
+ print(pruned_class_report)
+ #Visualize the pruneddecision tree
+ plt.figure(figsize=(20,10))
+ plot_tree(pruned_cart_model, filled=True,
+ feature_names=iris.feature_names, class_names=iris.target_names)
+ plt.show()
+ Full Example
+ Combininga l steps, here's thecompleteimplementation:
+python
+ importpandasaspd
+ fromsklearn.model_selectionimporttrain_test_split
+ fromsklearn.treeimportDecisionTreeClassifier
+ from sklearn.metrics import accuracy_score, confusion_matrix,
+ classification_report
+ fromsklearn.datasetsimportload_iris
+ importmatplotlib.pyplotasplt
+ fromsklearn.treeimportplot_tree
+ #Loadthedataset
+ iris=load_iris()
+ X=pd.DataFrame(iris.data,columns=iris.feature_names)
+ y=pd.Series(iris.target)
+ #Train-testsplit
+ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3,
+ random_state=42)
+ #TrainCARTdecisiontree
+ cart_model=DecisionTreeClassifier(random_state=42)
+ cart_model.fit(X_train,y_train)
+ #Evaluatemodel
+ y_pred=cart_model.predict(X_test)
+ accuracy=accuracy_score(y_test,y_pred)
+ conf_matrix=confusion_matrix(y_test,y_pred)
+ class_report=classification_report(y_test,y_pred)
+ print(f'Accuracy:{accuracy:.2f}')
+ print('ConfusionMatrix:')
+ print(conf_matrix)
+ print('ClassificationReport:')
+ print(class_report)
+#Visualize the decision tree
+ plt.figure(figsize=(20,10))
+ plot_tree(cart_model,
+ filled=True,
+ class_names=iris.target_names)
+ plt.show()
+ #TrainprunedCARTdecisiontree
+ pruned_cart_model
+ =
+ DecisionTreeClassifier(random_state=42,
+ max_depth=3, min_samples_split=4, min_samples_leaf=2)
+ pruned_cart_model.fit(X_train, y_train)
+ #Evaluatepruned model
+ y_pruned_pred = pruned_cart_model.predict(X_test)
+ pruned_accuracy = accuracy_score(y_test, y_pruned_pred)
+ pruned_conf_matrix =confusion_matrix(y_test, y_pruned_pred)
+ pruned_class_report = classification_report(y_test, y_pruned_pred)
+ print(f'Pruned Accuracy: {pruned_accuracy:.2f}')
+ print('Pruned Confusion Matrix:')
+ print(pruned_conf_matrix)
+ print('Pruned Classification Report:')
+ print(pruned_class_report)
+ #Visualize the pruneddecision tree
+ plt.figure(figsize=(20,10))
+ plot_tree(pruned_cart_model,
+ filled=True,
+ feature_names=iris.feature_names, class_names=iris.target_names)
+ plt.show()
+ feature_names=iris.feature_names,
+ This example demonstrates how to implement the CART algorithm for
+ decision tree learning, evaluate its performance, and address overfitting
+ using pruning techniques. You can adjust the pruning parameters to find
+ the optimal balance between bias andvariance.
+ OUTPUT
+ Initial Decision Tree Output
+Accuracy:
+ plaintext
+ Accuracy:0.98
+ ConfusionMatrix:
+ plaintext
+ ConfusionMatrix:
+ [[1900]
+ [0131]
+ [0012]]
+ ClassificationReport:
+ plaintext
+ ClassificationReport:
+ precision recall f1-score support
+ 0 1.00 1.00 1.00 19
+ 1 1.00 0.93 0.96 14
+ 2 0.92 1.00 0.96 12
+ accuracy 0.98 45
+ macroavg 0.97 0.98 0.97 45
+ weightedavg 0.98 0.98 0.98 45
+ VisualizationoftheDecisionTree:
+ plaintext
+[Visualizationofthetreewithmanynodesandbranches,showingdetailed
+ splitsbasedonfeatures]
+ PrunedDecisionTreeOutput
+ PrunedAccuracy:
+ plaintext
+ PrunedAccuracy:0.96
+ PrunedConfusionMatrix:
+ plaintext
+ PrunedConfusionMatrix:
+ [[1810]
+ [0131]
+ [0012]]
+ PrunedClassificationReport:
+ plaintext
+ PrunedClassificationReport:
+ precision recall f1-score support
+ 0 1.00 0.95 0.97 19
+ 1 0.93 0.93 0.93 14
+ 2 0.92 1.00 0.96 12
+ accuracy 0.96 45
+ macroavg 0.95 0.96 0.95 45
+ weightedavg 0.96 0.96 0.96 45
+ VisualizationofthePrunedDecisionTree:
+plaintext
+ [Visualization of the tree with fewer nodes and branches, showing
+ simplified splits based on features]
+ Explanation
+ Accuracy: Shows the percentage of correct predictions. The initial tree
+ might have higher accuracy due to overfitting, but the pruned tree has
+ slightly lower accuracywith better generalization.
+ Confusion Matrix: Represents the number of correct and incorrect
+ predictions for each class. Diagonal elements show correct predictions,
+ while off-diagonal elementsshow misclassifications.
+ Classification Report: Provides detailed metrics for each class,
+ including precision, recall, and F1-score.
+ Precision: The ratio of correctly predicted positive observationsto the
+ total predicted positives.
+ Reca l: The ratio of correctly predicted positive observations to all
+ observations in the actual class.
+ F1-score: The weightedaverage of precision and recall
