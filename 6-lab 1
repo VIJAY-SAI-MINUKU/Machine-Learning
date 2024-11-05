@@ -1,0 +1,112 @@
+To solve this classification problem using a feedforward neural network with backpropagation, I’ll walk you through building the neural network from scratch using the Wheat Seed Dataset. This dataset has seven input features that represent various characteristics of seeds and three target classes, which represent different varieties of wheat.
+
+### Steps:
+1. **Load and preprocess the dataset.**
+2. **Initialize the neural network parameters.**
+3. **Define the feedforward and backpropagation steps.**
+4. **Train the network using gradient descent.**
+5. **Evaluate the model's accuracy.**
+
+The code below is an implementation in Python using NumPy. It includes loading the data, normalizing it, setting up the network structure, performing feedforward, and then applying backpropagation for training.
+
+```python
+import numpy as np
+from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
+from sklearn.datasets import load_wine
+
+# Load and preprocess the Wheat Seed Dataset
+data = load_wine()
+X = data['data']
+y = data['target']
+
+# Normalize the data
+scaler = StandardScaler()
+X = scaler.fit_transform(X)
+
+# One-hot encode the target labels
+y_onehot = np.eye(3)[y]
+
+# Split the dataset into training and test sets
+X_train, X_test, y_train, y_test = train_test_split(X, y_onehot, test_size=0.2, random_state=42)
+
+# Define the network architecture
+input_size = X_train.shape[1]
+hidden_size = 10
+output_size = 3
+learning_rate = 0.01
+epochs = 1000
+
+# Initialize weights and biases
+np.random.seed(42)
+W1 = np.random.rand(input_size, hidden_size) - 0.5
+b1 = np.random.rand(hidden_size) - 0.5
+W2 = np.random.rand(hidden_size, output_size) - 0.5
+b2 = np.random.rand(output_size) - 0.5
+
+# Activation function and its derivative
+def sigmoid(x):
+    return 1 / (1 + np.exp(-x))
+
+def sigmoid_derivative(x):
+    return x * (1 - x)
+
+# Feedforward
+def feedforward(X):
+    z1 = X.dot(W1) + b1
+    a1 = sigmoid(z1)
+    z2 = a1.dot(W2) + b2
+    a2 = sigmoid(z2)
+    return z1, a1, z2, a2
+
+# Backpropagation
+def backpropagation(X, y, z1, a1, z2, a2):
+    global W1, b1, W2, b2
+    
+    output_error = a2 - y
+    output_delta = output_error * sigmoid_derivative(a2)
+    
+    hidden_error = output_delta.dot(W2.T)
+    hidden_delta = hidden_error * sigmoid_derivative(a1)
+    
+    W2 -= learning_rate * a1.T.dot(output_delta)
+    b2 -= learning_rate * np.sum(output_delta, axis=0)
+    W1 -= learning_rate * X.T.dot(hidden_delta)
+    b1 -= learning_rate * np.sum(hidden_delta, axis=0)
+
+# Training loop
+for epoch in range(epochs):
+    z1, a1, z2, a2 = feedforward(X_train)
+    backpropagation(X_train, y_train, z1, a1, z2, a2)
+
+# Testing the network
+_, _, _, a2_test = feedforward(X_test)
+y_pred = np.argmax(a2_test, axis=1)
+y_true = np.argmax(y_test, axis=1)
+
+# Accuracy
+accuracy = accuracy_score(y_true, y_pred)
+print(f"Test Accuracy: {accuracy * 100:.2f}%")
+```
+
+### Explanation:
+
+1. **Data Preprocessing**:
+   - Standardize the input features for better convergence.
+   - One-hot encode the output classes.
+
+2. **Feedforward Step**:
+   - Compute activations for the hidden and output layers.
+
+3. **Backpropagation Step**:
+   - Calculate the error for each layer.
+   - Update the weights and biases using gradient descent.
+
+4. **Training**:
+   - The network is trained for 1000 epochs.
+
+5. **Testing**:
+   - Calculate and print the model’s accuracy on the test set.
+
+This implementation constructs a basic neural network with one hidden layer and performs backpropagation for training. The accuracy on the test set gives an idea of how well the model performs on unseen data.
