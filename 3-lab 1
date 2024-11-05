@@ -1,0 +1,453 @@
+ Problem: Exploratory Data Analysis
+
+ Exploratory Data Analysis (EDA) is a method of analyzing datasetsto understand their
+ main characteristics. It involves summarizing data features, detecting patterns, and
+ uncovering relationships through visual and statistical techniques. EDA helps in
+ gaining insights and formulating hypotheses for further analysis.
+Whatis Data Pre-processing and Feature Engineering?
+ In our data-driven processes, we prioritize refining our raw data through the crucial
+ stagesof EDA (Exploratory Data Analysis). Both data pre-processing and feature
+ engineering play pivotal roles in this endeavor. EDA involvesa comprehensive range of
+ activities, including data integration, analysis, cleaning, transformation, and dimension
+ reduction.
+ Data pre-processing involves cleaning and preparing raw data to facilitate feature
+ engineering. Meanwhile, feature engineering entails employing various techniques to
+ manipulate the data. This may include adding orremoving relevant features, handling
+ missing data, encoding variables, and dealing with categorical variables, among other
+ tasks.
+ Undoubtedly, feature engineering is a critical task that significantly influences the
+ outcomeof a model. Itinvolves crafting newfeatures based on existing data while pre
+processing primarily focuses oncleaning and organizing the data.
+ Let’ slook athowtoperformEDAusing python!
+ Step 1: Import Python Libraries
+ Thefirst step involved in ML using python is understanding and playing around with
+ our data using libraries. Here is the link
+ to the dataset.
+ Import all libraries which are required for our analysis, such as Data Loading,
+ Statistical analysis, Visualizations, Data Transformations, Merge and Joins, etc.
+ Pandas andNumpy have beenusedforData Manipulation andnumerical
+ Calculations
+ Matplotlib and Seaborn have been used for Data visualizations.
+ import pandas as pd
+ import numpy as np
+ import matplotlib.pyplot as plt
+ import seaborn as sns
+ #to ignore warnings
+ import warnings
+ warnings.filterwarnings('ignore')
+ Step 2: Reading Dataset
+ThePandas library offers a wide range of possibilitiesfor loading data into the pandas
+ DataFrame fromfiles like JSON, .csv, .xlsx, .sql, .pickle, .html, .txt, images etc.
+ Most of thedata areavailable ina tabularformat of CSV files. It is trendy and easy to
+ access. Using the 
+read_csv() 
+function, data can be converted to a pandasDataFrame.
+ In this article, the data to predict 
+Used car price 
+is being used asan example. Inthis
+ dataset, we are trying to analyze the used car’ s price and how EDA focuses on
+ identifying the factors influencing the car price. We have stored the data in the
+ DataFrame 
+data.
+ data = pd.read_csv("used_cars.csv")
+ Analyzing the Data
+ Before wemake anyinferences, we listento ourdata by examining all variables inthe
+ data.
+ Themain goal of data understanding is to gaingeneral insightsabout the data, which
+ coversthe numberof rows and columns,values in the data, datatypes, and Missing
+ values in the dataset.
+ shape 
+shape 
+will display the number of observations(rows) and features(columns)
+ in the dataset
+ There are 7253 observations and 14 variables inourdataset
+ head() 
+will display the top 5 observations of the dataset
+ data.head()
+ tail() 
+will display the last 5 observations of the dataset
+ data.tail()
+ info() 
+helps to understand the data type and informationabout data, including the
+ number of records in eachcolumn, datahaving null or not nul, Data type, the memory
+ usage of the dataset
+data.info()
+ data.info() 
+shows the variablesMileage, Engine, Power, Seats, New_Price, and Price
+ have missing values. Numeric variables like Mileage, Power are of
+ datatype as float64 and int64. Categorical variables like Location, Fuel_Type,
+ Transmission, and OwnerType are of object datatype
+ Checkfor Duplication
+ nunique()based on 
+several unique values in each column and the data description, we
+ can identify the continuousand categorical columnsin the data. Duplicated data can
+ be handled orremoved based on furtheranalysis
+ data.nunique()
+ Missing Values Calculation
+ isnull() 
+is widely been in all pre-processing steps to identify nu l values in the data
+In our example, 
+data.isnull().sum() 
+is used to get the number of missing records in
+ each column
+ data.isnull().sum()
+ Thebelow codehelps to calculate the percentage of missing values ineach column
+ (data.isnull().sum()/(len(data)))*100
+ Thepercentage of missing values forthe columns 
+New_Price 
+and 
+Price 
+is ~86% and
+ ~17%, respectively.
+ Step 3: Data Reduction
+ Somecolumnsorvariablescan bedropped if they do notadd value to ouranalysis.
+ In our dataset, the column S.No have only ID values, assuming they don’ t have any
+ predictive power to predict the dependent variable.
+ # Remove S.No. column from data
+ data = data.drop(['S.No.'], axis = 1)
+ data.info()
+Westart ourFeature Engineering as we need to add some columns required for
+ analysis.
+ Step 4: Feature Engineering
+ Feature engineering refers to the processof using domain knowledge to select and
+ transform the most relevant variables from raw data when creating apredictive model
+ using machine learning or statistical modeling. The main goal of Feature engineering
+ is to create meaningful data fromrawdata.
+ Step 5: Creating Features
+ Wewill play around withthe variablesYear and Name in our dataset. If we see the
+ sample data, the column “ Year” shows themanufacturing yearof the car.
+ It would be difficult to find the car’ s age if it is in year format as the Age of the car
+ is a contributing factor to Car Price.
+ Introducing a newcolumn, “ Car_Age” toknowtheage of thecar
+ from datetime import date
+ date.today().year
+ data['Car_Age']=date.today().year-data['Year']
+ data.head()
+ Since car names wil not begreatpredictors of the price in ourcurrent data. But we
+ can processthis column to extract important information using brand and Model
+ names. 
+Let’ s splitthe name and introduce newvariables “ Brand” and “ Model”
+data['Brand'] = data.Name.str.split().str.get(0)
+ data['Model'] = data.Name.str.split().str.get(1) +
+ data.Name.str.split().str.get(2)
+ data[['Name','Brand','Model']]
+ Step 6: Data Cleaning/Wrangling
+ Somenamesofthevariables are notrelevant and not easy to understand. Some data
+ mayhavedata entryerrors, and some variablesmay need data type conversion. We
+ need to fix thisissue in the data.
+ In the example, 
+Thebrand name ‘ Isuzu’ ‘ ISUZU’ and‘ Mini’ and‘ Land’ looks
+ incorrect. This needs to be corrected
+ print(data.Brand.unique())
+ print(data.Brand.nunique())
+ searchfor = ['Isuzu' ,'ISUZU','Mini','Land']
+ data[data.Brand.str.contains('|'.join(searchfor))].head(5)
+ data["Brand"].replace({"ISUZU": "Isuzu", "Mini": "Mini Cooper","Land":"Land
+ Rover"}, inplace=True)
+ Wehavedonethefundamental data analysis, Featuring, and data clean-up. Let’ s
+ movetothe EDA process
+Voila!! Our Data is readyto perform EDA.
+ Step 7: EDAExploratory DataAnalysis
+ Exploratory Data Analysis refers to the crucial processof performing initial
+ investigations on data to discover patterns to check assumptions with the help of
+ summary statisticsand graphical representations.
+ EDAcanbeleveraged to check for outliers, patterns, and trends inthe given
+ data.
+ EDAhelpstofind meaningful patterns indata.
+ EDAprovidesin-depth insightsinto the data sets to solve our business
+ problems.
+ EDAgives a cluetoimpute missing valuesin the dataset
+ Step 8: Statistics Summary
+ Theinformationgivesa quickand simple descriptionof the data.
+ Can include Count, Mean, Standard Deviation, median, mode, minimum value,
+ maximumvalue, range, standard deviation, etc.
+ Statistics summarygivesa high-level idea to identifywhether the data has anyoutliers,
+ data entryerror, distribution of data such as the data is norma ly distributed or
+ left/right skewed
+ In python, this can be achieved using describe()
+ describe() function gives all statistics summary of data
+ describe()– Provide a statistics summaryof data belonging to numerical datatype
+ such as int, float
+ data.describe().T
+ Fromthestatistics summary, we caninferthe below findings :
+Yearsrange from1996- 2019 and hasa high ina rangewhich shows used cars
+ contain bothlatest models and old model cars.
+ Onaverage of Kilometers-drivenin Used cars are ~58k KM. The range showsa
+ huge difference betweenmin and max asmaxvalues show 650000KMshows
+ the evidence of anoutlier. Thisrecord can be removed.
+ Min value of Mileage shows 0 cars won’ t besoldwith 0mileage. This sounds
+ like a data entry issue.
+ It looks like Engine and Power have outliers, and the data is right-skewed.
+ Theaverage numberof seats in a car is 5. carseatis an important feature in
+ price contribution.
+ Themaxprice of a usedcaris 160k whichis quiteweird, sucha high price for
+ used cars. There maybean outlierordata entry issue.
+ describe(include=’ a l’ ) provides a statistics summary of all data, include object,
+ category etc
+ data.describe(include='all').T
+ Before we doEDA, lets separate Numerical and categorical variables for easy
+ analysis
+ cat_cols=data.select_dtypes(include=['object']).columns
+ num_cols = data.select_dtypes(include=np.number).columns.tolist()
+ print("Categorical Variables:")
+ print(cat_cols)
+ print("Numerical Variables:")
+ print(num_cols)
+ Step 9: EDAUnivariate Analysis
+ Analyzing/visualizing the dataset by taking one variable at a time:
+Data visualization is essential; we must decide what charts to plot to better
+ understand the data. In thisarticle, we visualize our data using Matplotlib and Seaborn
+ libraries.
+ Matplotlib is a Python2D plotting library used to draw basic charts we use Matplotlib.
+ Seaborn is also a python library built on top of Matplotlib that uses short lines of code
+ to create and style statistical plots from Pandasand Numpy
+ Univariate analysis can be done for bothCategorical and Numerical variables.
+ Categorical variables can be visualized using a Count plot, Bar Chart, Pie Plot, etc.
+ Numerical Variables can be visualized using Histogram, Box Plot, Density Plot, etc.
+ In our example, we have donea Univariate analysis using Histogram and BoxPlot for
+ continuousVariables.
+ In the belowfig, a histogram and boxplot is used to showthe pattern of the variables,
+ as somevariableshave skewnessand outliers.
+ for col in num_cols:
+ print(col)
+ print('Skew :', round(data[col].skew(), 2))
+ plt.figure(figsize = (15, 4))
+ plt.subplot(1, 2, 1)
+ data[col].hist(grid=False)
+ plt.ylabel('count')
+ plt.subplot(1, 2, 2)
+ sns.boxplot(x=data[col])
+ plt.show()
+Price and Kilometers Drivenare right skewed forthis data to be transformed, and all
+ outliers will be handled during imputation
+ categorical variables are being visualized using a count plot. Categorical variables
+ provide the pattern of factors influencing car price
+ fig, axes = plt.subplots(3, 2, figsize = (18, 18))
+ fig.suptitle('Bar plot for all categorical variables in the dataset')
+ sns.countplot(ax = axes[0, 0], x = 'Fuel_Type', data = data, color = 'blue',
+ order = data['Fuel_Type'].value_counts().index);
+ sns.countplot(ax = axes[0, 1], x = 'Transmission', data = data, color =
+ 'blue',
+ order = data['Transmission'].value_counts().index);
+ sns.countplot(ax = axes[1, 0], x = 'Owner_Type', data = data, color =
+ 'blue',
+ order = data['Owner_Type'].value_counts().index);
+ sns.countplot(ax = axes[1, 1], x = 'Location', data = data, color = 'blue',
+ order = data['Location'].value_counts().index);
+ sns.countplot(ax = axes[2, 0], x = 'Brand', data = data, color = 'blue',
+ order = data['Brand'].head(20).value_counts().index);
+ sns.countplot(ax = axes[2, 1], x = 'Model', data = data, color = 'blue',
+ order = data['Model'].head(20).value_counts().index);
+ axes[1][1].tick_params(labelrotation=45);
+ axes[2][0].tick_params(labelrotation=90);
+ axes[2][1].tick_params(labelrotation=90);
+Fromthecount plot, we can havebelow observations
+ Mumbaihas thehighest number of carsavailable for purchase,followedby Hyderabad and
+ Coimbatore
+ ~53%ofcarshavefueltype asDiesel this shows diesel cars provide higher
+ performance
+ ~72%ofcarshavemanualtransmission
+ ~82%ofcarsareFirstowned cars. Thisshows most of thebuyerspreferto
+ purchase first-owner cars
+~20%ofcarsbelong to the brand Marutifollowed by19% of cars belonging to
+ Hyundai
+ WagonRranksfirst among al modelswhich areavailable forpurchase
+ Step 10: Data Transformation
+ Before weproceed to Bi-variate Analysis, Univariate analysis
+ pattern assome variables to be transformed.
+ demonstrated the data
+ Price and Kilometer-Driven variables are highly skewed and on a larger scale. Let’ s
+ do log transformation.
+ Log transformation can help in normalization, so this variable canmaintain standard
+ scale with other variables:
+ # Function for log transformation of the column
+ def log_transform(data,col):
+ for colname in col:
+ if (data[colname] == 1.0).all():
+ data[colname + '_log'] = np.log(data[colname]+1)
+ else:
+ data[colname + '_log'] = np.log(data[colname])
+ data.info()
+ log_transform(data,['Kilometers_Driven','Price'])
+ #Log transformation of the feature 'Kilometers_Driven'
+ sns.distplot(data["Kilometers_Driven_log"],
+ axlabel="Kilometers_Driven_log");
+Step 12: EDABivariate Analysis
+ Now, let’ s move aheadwith bivariate analysis. Bivariate Analysis
+ helps to understand
+ how variables are related to each other and the relationship between dependent and
+ independent variables present in the dataset.
+ For Numerical variables, Pair plots and Scatter plots are widely been used to do
+ Bivariate Analysis.
+ AStacked bar chart canbeused for categorical variables if the output variable is a
+ classifier. Bar plots can be used if the output variable is continuous
+ In our example, a pairplot has beenused to show the relationship betweentwo
+ Categorical variables.
+ plt.figure(figsize=(13,17))
+ sns.pairplot(data=data.drop(['Kilometers_Driven','Price'],axis=1))
+ plt.show()
+Pair Plot provides below insights:
+ Thevariable Year hasa positive correlation with price and mileage
+ Ayearhas aNegativecorrelationwithkilometers-Driven
+ Mileage is negatively correlated with Power
+ As power increases, mileage decreases
+ Car with recent make is higher at prices. As the age of the car increases price
+ decreases
+ Engine and Power increase, and the price of the car increases
+ Abarplot
+ can beusedto
+ showthe relationship between Categorical variables and
+ continuous variables
+ fig, axarr = plt.subplots(4, 2, figsize=(12, 18))
+data.groupby('Location')['Price_log'].mean().sort_values(ascending=False).p
+ lot.bar(ax=axarr[0][0], fontsize=12)
+ axarr[0][0].set_title("Location Vs Price", fontsize=18)
+ data.groupby('Transmission')['Price_log'].mean().sort_values(ascending=Fals
+ e).plot.bar(ax=axarr[0][1], fontsize=12)
+ axarr[0][1].set_title("Transmission Vs Price", fontsize=18)
+ data.groupby('Fuel_Type')['Price_log'].mean().sort_values(ascending=False).
+ plot.bar(ax=axarr[1][0], fontsize=12)
+ axarr[1][0].set_title("Fuel_Type Vs Price", fontsize=18)
+ data.groupby('Owner_Type')['Price_log'].mean().sort_values(ascending=False).
+ plot.bar(ax=axarr[1][1], fontsize=12)
+ axarr[1][1].set_title("Owner_Type Vs Price", fontsize=18)
+ data.groupby('Brand')['Price_log'].mean().sort_values(ascending=False).head
+ (10).plot.bar(ax=axarr[2][0], fontsize=12)
+ axarr[2][0].set_title("Brand Vs Price", fontsize=18)
+ data.groupby('Model')['Price_log'].mean().sort_values(ascending=False).head
+ (10).plot.bar(ax=axarr[2][1], fontsize=12)
+ axarr[2][1].set_title("Model Vs Price", fontsize=18)
+ data.groupby('Seats')['Price_log'].mean().sort_values(ascending=False).plot.
+ bar(ax=axarr[3][0], fontsize=12)
+ axarr[3][0].set_title("Seats Vs Price", fontsize=18)
+ data.groupby('Car_Age')['Price_log'].mean().sort_values(ascending=False).pl
+ ot.bar(ax=axarr[3][1], fontsize=12)
+ axarr[3][1].set_title("Car_Age Vs Price", fontsize=18)
+ plt.subplots_adjust(hspace=1.0)
+ plt.subplots_adjust(wspace=.5)
+ sns.despine()
+
+Observations
+ Theprice of cars ishighin Coimbatore and less price in Kolkata and Jaipur
+ Automatic cars have more price than manualcars.
+ Diesel and Electric cars have almost the same price, whichis maximum, and
+ LPGcarshavethelowest price
+ First-owner cars are higher in price, followed by a second
+ Thethird owner’ sprice is lesser than the Fourthand above
+ Lamborghini brand is the highest inprice
+ Gallardocoupe Model is the highest inprice
+ 2 Seaterhas the highest price followed by 7 Seater
+ Thelatest model cars are high in price
+ Step 13: EDAMultivariate Analysis
+ As thenamesuggests, Multivariate analysis
+ looks at more than twovariables.
+ Multivariate analysis is one of the most useful methods to determine relationships and
+ analyze patterns for any dataset.
+ Aheat mapiswidely beenusedforMultivariate Analysis
+ Heat Mapgivesthecorrelationbetweenthe variables, whether it has a positive or
+ negative correlation.
+ In our example heat map showsthecorrelationbetweenthe variables.
+ plt.figure(figsize=(12, 7))
+ sns.heatmap(data.drop(['Kilometers_Driven','Price'],axis=1).corr(), annot =
+ True, vmin =-1, vmax = 1)
+ plt.show()
+FromtheHeatmap,we caninferthefollowing:
+ Theengine has astrong positive correlationto Power0.86
+ Price has apositive correlation to Engine 0.69 as well Power 0.77
+ Mileage has correlated to Engine, Power, and Price negatively
+ Price is moderately positive in correlation to year.
+ Kilometer driven has a negative correlation to year not much impact on the
+ price
+ Car agehas a negativecorrelation with Price
+ car Ageispositively correlated to Kilometers-Driven as the Age of the car
+ increases; then the kilometer will also increase of car has a negative correlation
+ with Mileage thismakes sense
+ Step 14: Impute Missing values
+ Missing data arise inalmost all statistical analyses. There are many waysto impute
+ missing values; we can impute the missing values bytheir 
+Mean
+ , 
+median
+ , most
+ frequent, or zero values and use advanced imputationalgorithms like
+ KNN
+ , 
+Regularization, 
+etc.
+ Wecannot imputethedata with a simpleMean/Median. We must needbusiness
+ knowledge orcommon insights aboutthe data. If we have domain knowledge, itwil
+ add value to the imputation. Some data canbe imputed onassumptions.
+In our dataset, we have found there are missing values formany columns like Mileage,
+ Power, and Seats.
+ Weobserved earlier some observations have zero Mileage. This lookslike a data entry
+ issue. We could fix this by filling null values with zero and then the meanvalue of
+ Mileage since Mean and Median values arenearly the sameforthis variable chosen
+ Meanto imputethevalues.
+ data.loc[data["Mileage"]==0.0,'Mileage']=np.nan
+ data.Mileage.isnull().sum()
+ data['Mileage'].fillna(value=np.mean(data['Mileage']),inplace=True)
+ Similarly, imputation for Seats. As we mentioned earlier, we need to know common
+ insights about the data.
+ Let’ sassumesome carsbrand andModelshavefeatures likeEngine, Mileage,
+ Power, and Numberof seatsthatare nearly the same. Let’ simpute those missing
+ values with the existing data:
+ data.Seats.isnull().sum()
+ data['Seats'].fillna(value=np.nan,inplace=True)
+ data['Seats']=data.groupby(['Model','Brand'])['Seats'].apply(lambda
+ x:x.fillna(x.median()))
+ data['Engine']=data.groupby(['Brand','Model'])['Engine'].apply(lambda
+ x:x.fillna(x.median()))
+ data['Power']=data.groupby(['Brand','Model'])['Power'].apply(lambda
+ x:x.fillna(x.median()))
+ In general, there are no defined or perfect rules for imputing missing values in a
+ dataset. Each method canperform better for some datasets but mayperform even
+ worse. Only practice and experiments give the knowledge which works better.
+ Exploratory Data Analysis in Python
+ Exploratory data analysis (EDA) is a critical initial step in the data science workflow. It
+ involves using Python libraries to inspect, summarize, and visualize data to uncover
+ trends, patterns, and relationships. Here’ sa breakdown ofthe key steps in
+ performing EDA withPython:
+ 1. Importing Libraries:
+ pandas (pd): 
+For datamanipulationand analysis.
+ NumPy(np): 
+For numerical computations.
+ Matplotlib.pyplot (plt): 
+For basic plotting functionalities.
+ Seaborn (sns): 
+A built-on top of Matplotlib, providing high-level visualization.
+ 2. Loading the Data:
+Use pd.read_csv()forCSVfiles, similar functions exist for other data formats
+ (e.g., .xlsx, .json).
+ 3. Initial Inspection:
+ Get an overviewof the datausing df.head(), .tail(), and .info().
+ Check data types with df.dtypes.
+ 4. Data Cleaning:
+ Identify and handle missing values using methods like df.isnull().sum().
+ Find and address duplicateswithdf.duplicated().sum().
+ 5. Univariate Analysis:
+ Analyze single variables at a time.
+ Use descriptive statistics with df.describe() for numerical data.
+ Create histograms, box plots, and density plots to visualize distributions.
+ 6. Bivariate Analysis:
+ Explore relationships between two variables.
+ Create scatter plots to identify trends and potential correlations.
+ 7. Visualization:
+ Effective visualizations are crucial for understanding data.
+ Use various plots like bar charts, pie charts, and heatmapsto represent
+ categorical data.
+ Conclusion
+ In conclusion, Exploratory Data Analysis(EDA) is crucial for understanding datasets,
+ identifying patterns, and informing subsequent analysis. Data pre-processing and
+ feature engineering are essential stepsin preparing data for analysis, involving tasks
+ such as data reduction, cleaning, and transformation. Pythonlibraries offer powerful
+ tools for executing these stepsefficiently.Also, in the article we talk about how eda
+ using python and youcan maketoit we showeda completeguideforthat.
+ Also,In this article, we tried to analyze the factors influencing the used car’ s price.
+ Data Analysishelps to find the basic structure of the dataset.
+ Dropped columns thatare not adding value to our analysis.
+Performed Feature Engineering by adding some columns which contribute to
+ our analysis.
+ Data Transformations have been used to normalize the columns.
+ Weuseddifferent visualizations for Exploratory data analysis (EDA)like
+ Univariate, Bi-Variate, and Multivariate Analysis.
