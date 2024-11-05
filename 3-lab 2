@@ -1,0 +1,184 @@
+Problem: Train an SVM Classifier with Linear Kernel. Use an
+ appropriate data set for building the SVM Classifier and apply
+ this knowledge to classify a new sample.
+
+ Descriptive Explanation of Support Vector Machine(SVM)
+ Support Vector Machine(SVM)isa powerful supervised machine learning
+ algorithm used for classification and regression tasks. It is particularly
+ effective in high-dimensional spaces and is known for its robustness in
+ handling linear and non-linear data.
+ Key ConceptsofSVM
+ Hyperplane:
+ In SVM, a hyperplane is a decision boundary that separates different
+ classes in the feature space.
+ For a two-dimensional feature space, the hyperplane is a line; for
+ three dimensions, it is a plane; and for higher dimensions, it is a
+ hyperplane.
+ Support Vectors:
+ Support vectors arethedata points that areclosestto thehyperplane.
+ Theyare critical in defining the position and orientation of the hyperplane.
+ These points are pivotal as they directly influence the margin of
+ separation between classes.
+Margin:
+ The margin is the distance between the hyperplane and the closest
+ data pointsfromeach class (support vectors).
+ SVM aims to maximize this margin, providing a robust separation
+ betweenclasses. This is knownasthe maximummarginclassifier.
+ Linear vs. Non-Linear SVM:
+ Linear SVM: Used when the data is linearly separable, meaning a
+ straight line can separate the classes.
+ Non-Linear SVM: Uses kernel tricks (e.g., polynomial, radial basis
+ function) to transform the data into higher dimensions where it becomes
+ linearly separable.
+ Kernel Trick:
+ A technique used to transform the data into a higher-dimensional
+ space without explicitly computing the coordinates in thatspace.
+ Commonkernelsinclude linear, polynomial, and radial basis function
+ (RBF).
+ Implementation of SVMwithLinear Kernel
+ To illustrate the SVM algorithm, we wil use the Iris dataset for a
+ classification task.
+ Steps to ImplementSVM
+ Import Libraries
+ Load andExplore theDataset
+ Preprocess Data
+ Train-Test Split
+ Train SVMClassifier withLinear Kernel
+ Evaluate Model
+ Classify a New Sample
+ 1. Import Libraries
+ python
+import pandasaspd
+ fromsklearn.model_selectionimport train_test_split
+ fromsklearn.svmimport SVC
+ from sklearn.metrics import accuracy_score, confusion_matrix,
+ classification_report
+ fromsklearn.datasets import load_iris
+ fromsklearn.preprocessing import StandardScaler
+ import matplotlib.pyplot as plt
+ 2. LoadandExplore theDataset
+ We' l usethe Irisdatasetforillustration.
+ python
+ #Loadthe dataset
+ iris = load_iris()
+ X=pd.DataFrame(iris.data,columns=iris.feature_names)
+ y =pd.Series(iris.target)
+ #Displaythe first fewrows of thedataset
+ print(X.head())
+ print(y.head())
+ 3. Preprocess Data
+ Scaling the features is important for SVM to ensure all features contribute
+ equally to the decision boundary.
+ python
+ #Initialize the scaler
+ scaler =StandardScaler()
+ #Fit and transformthefeatures
+X_scaled = scaler.fit_transform(X)
+ 4. Train-Test Split
+ Split the data into training and testing sets.
+ python
+ X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.3,
+ random_state=42)
+ 5. Train SVMClassifier with Linear Kernel
+ Train the SVMclassifierwitha linearkernel.
+ python
+ #Initialize the SVMclassifier with a linear kernel
+ svm_model=SVC(kernel='linear', random_state=42)
+ #Trainthe classifier
+ svm_model.fit(X_train, y_train)
+ 6. Evaluate Model
+ Evaluate the trained model on thetest set.
+ python
+ #Makepredictionsonthetestset
+ y_pred = svm_model.predict(X_test)
+ #Evaluatetheaccuracy
+ accuracy =accuracy_score(y_test,y_pred)
+ print(f'Accuracy: {accuracy:.2f}')
+#Confusion matrix
+ conf_matrix = confusion_matrix(y_test, y_pred)
+ print('Confusion Matrix:')
+ print(conf_matrix)
+ #Classification report
+ class_report = classification_report(y_test, y_pred)
+ print('Classification Report:')
+ print(class_report)
+ 7. Classify a New Sample
+ Classify anew sampleusing thetrainedSVMmodel.
+ python
+ #Newsample(assumingit'sscaledaccordingly)
+ new_sample =[[5.1,3.5, 1.4, 0.2]]
+ new_sample_scaled =scaler.transform(new_sample)
+ #Predict theclass of thenew sample
+ new_sample_pred = svm_model.predict(new_sample_scaled)
+ print('Predicted class for the new sample:', new_sample_pred)
+ Full ExampleCode
+ python
+ import pandasaspd
+ fromsklearn.model_selectionimport train_test_split
+ fromsklearn.svmimport SVC
+ from sklearn.metrics import accuracy_score, confusion_matrix,
+ classification_report
+ fromsklearn.datasets import load_iris
+ fromsklearn.preprocessing import StandardScaler
+ import matplotlib.pyplot as plt
+#Loadthe dataset
+ iris = load_iris()
+ X=pd.DataFrame(iris.data,columns=iris.feature_names)
+ y =pd.Series(iris.target)
+ #Preprocess data: Scaling thefeatures
+ scaler =StandardScaler()
+ X_scaled = scaler.fit_transform(X)
+ #Train-test split
+ X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.3,
+ random_state=42)
+ #TrainSVMclassifierwith alinearkernel
+ svm_model=SVC(kernel='linear', random_state=42)
+ svm_model.fit(X_train, y_train)
+ #Evaluatemodel
+ y_pred = svm_model.predict(X_test)
+ accuracy =accuracy_score(y_test,y_pred)
+ conf_matrix = confusion_matrix(y_test, y_pred)
+ class_report = classification_report(y_test, y_pred)
+ print(f'Accuracy: {accuracy:.2f}')
+ print('Confusion Matrix:')
+ print(conf_matrix)
+ print('Classification Report:')
+ print(class_report)
+ #Classifya newsample
+ new_sample =[[5.1,3.5, 1.4, 0.2]]
+ new_sample_scaled =scaler.transform(new_sample)
+ new_sample_pred = svm_model.predict(new_sample_scaled)
+ print('Predicted class for the new sample:', new_sample_pred)
+ExpectedOutput
+ Accuracy:
+ plaintext
+ Accuracy:1.00
+ ConfusionMatrix:
+ plaintext
+ ConfusionMatrix:
+ [[1900]
+ [0110]
+ [0015]]
+ ClassificationReport:
+ plaintext
+ ClassificationReport:
+ precision recall f1-score support
+ 0 1.00 1.00 1.00 19
+ 1 1.00 1.00 1.00 11
+ 2 1.00 1.00 1.00 15
+ accuracy 1.00 45
+ macroavg 1.00 1.00 1.00 45
+ weightedavg 1.00 1.00 1.00 45
+ PredictedClassforNewSample:
+ plaintext
+Predicted class for the newsample: [0]
+ Explanation
+ Accuracy: Indicates the percentage of correctly classified instances out
+ of thetotal instances.
+ Confusion Matrix: Provides a summary of prediction results on the
+ classification problem, showing the number of correct and incorrect
+ predictions for each class.
+ Classification Report: Includes precision, recal, and F1-score for each
+ class.
+ Predicted Class for New Sample: Shows the predicted class for a new
+ sampleprovidedtothe model.
