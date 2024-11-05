@@ -1,0 +1,79 @@
+EXP 9: Build a neural network that will read the image of a digit and
+ correctly identify the number.
+ To build a neural network that reads an image of a digit and correctly
+ identifies the number, we can use the popular MNIST dataset. This
+ dataset contains images of handwritten digits (0-9) and is widely used for
+ training image recognitionsystems.
+ We' l use the Keras library (from TensorFlow) to implement a simple
+ neural network for digit classification.
+ Steps to Build theNeural Network:
+ Import Libraries: Use TensorFlow/Keras tobuild the neural network.
+ Load theDataset: Load theMNISTdatasetofhandwritten digits.
+ Preprocess the Data: Normalize the image data and one-hot encode the
+ labels.
+ Build the Neural Network Model: Definea multi-layer neural network.
+ Train the Model: Train the neural network on thetraining data.
+ Evaluate the Model: Testthe model onthetestdata.
+ MakePredictions: Usethe modeltopredictnewdigits.
+ Key Components:
+Data Loading: The MNIST dataset is loaded using TensorFlow/Keras.
+ The dataset contains 60,000training images and 10,000 test images.
+ Preprocessing: We normalize the images by dividing the pixel values by
+ 255, transforming the values into the range [0, 1]. The labels (digits) are
+ one-hot encoded, so that each label is represented by a 10-element array
+ (one foreach digit).
+ ModelArchitecture:
+ The first layer flattens the 28x28 pixel images into a 1D array of 784
+ pixels.
+ Adensehiddenlayer with 128 neuronsand ReLUactivationis added.
+ The output layer has 10 neurons, corresponding to the digits 0-9, with
+ softmax activation tooutputprobabilities.
+ Compilation: The model uses the Adam optimizer, categorical
+ cross-entropy loss, and accuracyasthe evaluation metric.
+ Training: The model is trained for 5 epochs with a batch size of 32.
+ Eachepochgoesthroughtheentiredataset once.
+ Evaluation: The model is evaluated on the test dataset to compute
+ accuracy.
+ Prediction: The model is used to make predictions on the test data, and
+ the predicted digit for the first test image is displayed.
+ install TensorFlow by running:
+ pip instal tensorflow
+ #Import necessarylibraries
+ import numpyasnp
+ import tensorflowastf
+ fromtensorflow.keras import layers,models
+import matplotlib.pyplot as plt
+ #Loadthe MNISTdataset
+ mnist =tf.keras.datasets.mnist
+ (X_train, y_train), (X_test, y_test) = mnist.load_data()
+ #Step 1: Preprocess thedata
+ #Normalizethepixel values tobebetween 0 and1
+ X_train = X_train/ 255.0
+ X_test = X_test / 255.0
+ #One-hot encodethelabels
+ y_train = tf.keras.utils.to_categorical(y_train, 10)
+ y_test = tf.keras.utils.to_categorical(y_test, 10)
+ #Step 2: BuildtheNeural NetworkModel
+ model=models.Sequential()
+ #Inputlayer(flatten the 28x28 images to1Darray)
+ model.add(layers.Flatten(input_shape=(28, 28)))
+ #Hiddenlayer with 128 neuronsandReLUactivation
+ model.add(layers.Dense(128, activation='relu'))
+#Output layer with 10neurons (onefor each digit) and softmaxactivation
+ model.add(layers.Dense(10, activation='softmax'))
+ #Step 3: Compilethemodel
+ model.compile(optimizer='adam',
+ loss='categorical_crossentropy',
+ metrics=['accuracy'])
+ #Step 4: Train themodel
+ model.fit(X_train, y_train, epochs=5, batch_size=32)
+ #Step 5: Evaluatethe modelonthetest data
+ test_loss, test_accuracy = model.evaluate(X_test, y_test, verbose=2)
+ #Displaythe accuracy
+ print(f'Test accuracy: {test_accuracy * 100:.2f}%')
+ #Step 6: Makepredictions
+ predictions = model.predict(X_test)
+ #Showthefirsttestimageandprediction
+ plt.imshow(X_test[0], cmap='gray')
+ plt.title(f'Predicted Label: {np.argmax(predictions[0])}')
+ plt.show()
