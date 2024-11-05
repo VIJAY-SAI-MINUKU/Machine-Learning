@@ -1,0 +1,148 @@
+Problem : Build linear regression and multiple regression models to predict
+ the price of thehouse(Boston House Prices Dataset). using python
+ 
+ Simple Linear Regression 
+is a statistical method used to model the relationship
+ between two variables: one independent (predictor) variable and one dependent
+ (target) variable. The goal is to find a linear relationship between these variables by
+ fitting a straight line through the data points. This line is called the "regression line"
+ and is represented bythe equation:
+ y=β0+β1x+ϵy=\beta_0+\beta_1x+\epsilony=β0 +β1 x+ϵ
+ yyy:Dependentvariable(e.g.,houseprice)
+ xxx:Independentvariable(e.g.,averagenumberofrooms'RM')
+ β0\beta_0β0 :Intercept(thevalueofyyywhenx=0x=0x=0)
+ β1\beta_1β1 :Slope(thechangeinyyywhenxxxchangesbyoneunit)
+ ϵ\epsilonϵ:Errorterm(accountsforrandomnessorfactorsnotcapturedbythemodel)
+ In simple linear regression, the model aims to minimize the difference between the
+ predicted values and actual values (using techniques like least squares).
+Example
+ : Predicting house prices based onthe average number of rooms ina house
+ ('RM'). Here, 'RM' is the independent variable, and the house price is the dependent
+ variable.
+ Multiple Linear Regression
+ Multiple Linear Regression 
+is an extension of simple linear regression where more
+ than one independent variable is used to predict a dependent variable. It modelsthe
+ linear relationship between multiple predictors and the target, allowing for more
+ accurate and complexpredictions. The equation for multiple linear regression is:
+ y=β0+β1x1+β2x2+⋯+βnxn+ϵy=\beta_0+\beta_1x_1+\beta_2x_2+\cdots+\beta_nx_n+
+ \epsilony=β0 +β1 x1 +β2 x2 +⋯+βn xn +ϵ
+ yyy:Dependentvariable(e.g.,houseprice)
+ x1,x2,… ,xnx_1,x_2,\ldots,x_nx1 ,x2 ,… ,xn :Independentvariables(e.g.,RM,LSTAT,
+ PTRATIO,etc.)
+ β0\beta_0β0 :Intercept
+ β1,β2,… ,βn\beta_1,\beta_2,\ldots,\beta_nβ1 ,β2 ,… ,βn :Coefficientsforthe
+ respectivepredictors
+ ϵ\epsilonϵ:Errorterm
+ In multiple linear regression, the model accounts for multiple factors, and the goal isto
+ find the best-fitting plane (rather than a line) through the data points.
+ Example
+ : Predicting house prices based onseveral featuressuchas 'RM' (number of
+ rooms), 'LSTAT' (percentage of lower-status population), and 'PTRATIO' (pupil-teacher
+ ratio).
+ Key Differences
+ 1. 
+Number ofpredictors
+ :
+ o Simplelinearregression:Onepredictor.
+ o Multiplelinearregression:Twoormorepredictors.
+ 2. 
+Complexity
+ :
+ o Simplelinearregressionfitsastraightline.
+ o Multiplelinearregressionfitsahyperplaneorahigher-dimensionalplane.
+ 3. 
+Predictive Power
+ :
+ o Multiplelinearregressiongenerallyhasbetterpredictivepowersinceit
+ incorporatesmoreinformation
+ Python program:
+#Importing necessary libraries
+ import numpyasnp
+ import pandasaspd
+ import matplotlib.pyplot as plt
+ import seaborn assns
+ fromsklearn.model_selectionimport train_test_split
+ fromsklearn.linear_model import LinearRegression
+ fromsklearn.metricsimport mean_squared_error, r2_score
+ fromsklearn.datasets import load_boston
+ #Loading thedataset
+ boston =load_boston()
+ Note: The load_boston() function has been deprecated in newer
+ versions of scikit-learn. You can alternatively download the dataset from
+ anothersourcelike Kaggleor load it froma CSVfile.
+ #Convert toDataFrame
+ df =pd.DataFrame(boston.data, columns=boston.feature_names)
+ df['PRICE'] = boston.target
+ #Displaythe first fewrows of thedataset
+ df.head()
+ #Checkformissingvalues
+ print(df.isnull().sum())
+ #Visualize the relationship between features and price
+ sns.pairplot(df, x_vars=['RM', 'LSTAT', 'PTRATIO'], y_vars='PRICE', height=5,
+ aspect=0.7)
+ plt.show()
+#Checkcorrelation matrix
+ plt.figure(figsize=(10, 8))
+ sns.heatmap(df.corr(), annot=True, cmap='coolwarm')
+ plt.show()
+ #Split into input features (X) and target variable (y)
+ X=df.drop('PRICE', axis=1)
+ y =df['PRICE']
+ #Train-Test Split
+ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2,
+ random_state=42)
+ #Let's start with a simple linearregression model using just onefeature (e.
+ g., 'RM'):
+ #Using 'RM'(averagenumber ofrooms) topredict houseprices
+ X_train_rm =X_train[['RM']]
+ X_test_rm = X_test[['RM']]
+ #Createthe model
+ linear_reg = LinearRegression()
+ #Trainthe model
+ linear_reg.fit(X_train_rm, y_train)
+ #Predict on test data
+ y_pred_rm= linear_reg.predict(X_test_rm)
+ #Evaluatethemodel
+ mse_rm=mean_squared_error(y_test,y_pred_rm)
+r2_rm=r2_score(y_test, y_pred_rm)
+ print("Simple Linear Regression:")
+ print(f"Mean Squared Error (MSE): {mse_rm}")
+ print(f"R-squared (R2): {r2_rm}")
+ #Nowlet's build amultiple linear regression model using a l thefeatures.
+ #Createthe model
+ multi_reg = LinearRegression()
+ #Trainthe model
+ multi_reg.fit(X_train, y_train)
+ #Predict on test data
+ y_pred_multi = multi_reg.predict(X_test)
+ #Evaluatethemodel
+ mse_multi = mean_squared_error(y_test, y_pred_multi)
+ r2_multi = r2_score(y_test, y_pred_multi)
+ print("Multiple Linear Regression:")
+ print(f"Mean Squared Error (MSE): {mse_multi}")
+ print(f"R-squared (R2): {r2_multi}")
+ Step 7: Model Evaluation
+ #Plot for Simple LinearRegression
+ plt.scatter(X_test_rm, y_test, color='blue', label='Actual')
+ plt.plot(X_test_rm, y_pred_rm, color='red', label='Predicted')
+ plt.xlabel('Average number of rooms (RM)')
+ plt.ylabel('House Price')
+ plt.title('Simple Linear Regression- RMvs Price')
+ plt.legend()
+plt.show()
+ #Plot for Multiple Linear Regression
+ plt.scatter(y_test, y_pred_multi)
+ plt.xlabel("Actual Prices")
+ plt.ylabel("Predicted Prices")
+ plt.title("Multiple Linear Regression- Actual vs Predicted")
+ plt.show()
+ ReSults:
+ Simple Linear Regression 
+(using 'RM' feature):
+ MeanSquaredError(MSE): 46.14
+ R-squared (R²): 0.37
+ Multiple Linear Regression 
+(using all features):
+ MeanSquaredError(MSE): 24.29
+ R-squared (R²): 0.67
