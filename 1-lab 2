@@ -1,0 +1,203 @@
+Problem: Use Naïve Bayes classifier to solve the credit card fraud
+ detection problem.
+ 
+ Introduction to Naive Bayes Classifier
+ TheNaive Bayes classifier is a probabilistic machine learning model used for
+ classification tasks. It is based on Bayes' Theorem withthe "naive" assumption of
+ conditional independence between every pair offeatures given the classlabel. Despite
+ this assumption, Naive Bayesworks well in manyreal-world situations, especially with
+ large datasets.
+ 
+ Bayes' Theorem
+ Bayes' Theoremdescribes the probability of an event, based onpriorknowledge of
+ conditions that might be related to the event. The theorem is stated mathematicaly as:
+ P(A∣ B)=P(B∣ A)⋅P(A)P(B)P(A|B) =\frac{P(B|A) \cdot P(A)}{P(B)}P(A∣ B)=P(B)P(B∣
+ A)⋅P(A) 
+Where:
+ P(A∣ B)P(A|B)P(A∣ B)istheposteriorprobability:theprobabilityofeventAAAoccurring
+ giventhatBBBistrue.
+ P(B∣ A)P(B|A)P(B∣ A)isthelikelihood:theprobabilityofeventBBBoccurringgiventhat
+ AAAistrue.
+ P(A)P(A)P(A)isthepriorprobability:theinitialprobabilityofeventAAA.
+ P(B)P(B)P(B)isthemarginalprobability:thetotalprobabilityofeventBBB.
+ 
+ Naive BayesClassifier Model
+In the context of a Naive Bayesclassifier, we want to classifya data point
+ x=(x1,x2,...,xn)x = (x_1, x_2, ..., x_n)x=(x1 ,x2 ,...,xn ) into one of kkk classes C1,C2,...
+ ,CkC_1, C_2, ..., C_kC1 ,C2 ,...,Ck . According to Bayes' Theorem:
+ P(Ck∣ x)=P(x∣ Ck)⋅P(Ck)P(x)P(C_k| x) = \frac{P(x | C_k) \cdot P(C_k)}{P(x)}P(Ck ∣
+ x)=P(x)P(x∣ Ck )⋅P(Ck ) 
+Since P(x)P(x)P(x) is constant for a l classes, we only need to maximize the numerator:
+ P(Ck∣ x)∝ P(x∣ Ck)⋅P(Ck)P(C_k |x) \propto P(x| C_k) \cdot P(C_k)P(Ck ∣ x)∝ P(x∣
+ Ck )⋅P(Ck )
+ Thenaive assumption is that the features are conditiona ly independent given the
+ class, so:
+ P(x∣ Ck)=P(x1∣ Ck)⋅P(x2∣ Ck)⋅...⋅P(xn∣ Ck)P(x | C_k) = P(x_1 | C_k) \cdot P(x_2 | C_k)
+ \cdot ... \cdot P(x_n | C_k)P(x∣ Ck )=P(x1 ∣ Ck )⋅P(x2 ∣ Ck )⋅...⋅P(xn ∣ Ck )
+ Thus, the classifier predicts the class CkC_kCk that maximizes:
+ P(Ck∣ x)∝ P(Ck)⋅∏ i=1nP(xi∣ Ck)P(C_k | x) \propto P(C_k) \cdot \prod_{i=1}^{n} P(x_i |
+ C_k)P(Ck ∣ x)∝ P(Ck )⋅∏ i=1n P(xi ∣ Ck )
+ 
+ Types of Naive Bayes Classifiers
+ 1. 
+GaussianNaiveBayes
+ :Assumesthatthecontinuousfeaturesfollowanormal(Gaussian)
+ distribution.
+ 2. 
+MultinomialNaiveBayes
+ :Typicallyusedfordiscretefeatures,likewordcountsintext
+ classification.
+ 3. 
+BernoulliNaiveBayes
+ :Usedforbinary/booleanfeatures.
+ Data SetLink: 
+https://www.kaggle.com/datasets/kartikkkc/fraud-data
+ Step-by-Step Implementation
+ Import Libraries
+ Load Data
+ Preprocess Data
+ Train-Test Split
+Train Naive Bayes Classifier
+ Evaluate Mode
+ 1. Import Libraries
+ python
+ import pandasaspd
+ fromsklearn.model_selectionimport train_test_split
+ fromsklearn.naive_bayes import GaussianNB
+ fromsklearn.metricsimport accuracy_score, confusion_matrix,
+ classification_report
+ 2. LoadData
+ Assumeyouhave adataset fraud_data.csvwith features and a target
+ variable indicating fraud.
+ python
+ #Loaddata
+ data =pd.read_csv('fraud_data.csv')
+ #Displayfirst few rows
+ print(data.head())
+ 3. Preprocess Data
+ Ensure your data is cleanandsuitable fortraining. This might include
+ handling missing values, encoding categorical variables, and scaling
+ features if necessary.
+ python
+ #Example preprocessing(thiswill varybasedonyour actual data)
+ #Assuming 'is_fraud' isthe target variable and the rest are features
+ #Separating features and target variable
+ X=data.drop('is_fraud', axis=1)
+ y =data['is_fraud']
+ #If there areanycategorical variables, encode themusing one-hot
+ encoding
+ X=pd.get_dummies(X, drop_first=True)
+ #Handlemissingvalues if any
+ X.fillna(X.mean(), inplace=True)
+ 4. Train-Test Split
+ Split the data into training and testing sets.
+ python
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3,
+ random_state=42)
+ 5. Train Naive BayesClassifier
+ UseGaussianNBfromscikit-learn to trainthe NaiveBayes classifier.
+ python
+ #Initialize the Gaussian Naive Bayes classifier
+ nb_classifier = GaussianNB()
+ #Trainthe classifier
+ nb_classifier.fit(X_train, y_train)
+ 6. Evaluate Model
+ Evaluate the performanceof the trainedmodel onthe test set.
+ python
+ #Makepredictionsonthetestset
+ y_pred = nb_classifier.predict(X_test)
+ #Evaluatetheaccuracy
+ accuracy =accuracy_score(y_test,y_pred)
+ print(f'Accuracy: {accuracy:.2f}')
+ #Confusion matrix
+ conf_matrix = confusion_matrix(y_test, y_pred)
+ print('Confusion Matrix:')
+ print(conf_matrix)
+ #Classification report
+ class_report = classification_report(y_test, y_pred)
+ print('Classification Report:')
+ print(class_report)
+ Full Example
+ Here’ sthe completecodetogether:
+ python
+ import pandasaspd
+ fromsklearn.model_selectionimport train_test_split
+ fromsklearn.naive_bayes import GaussianNB
+ fromsklearn.metricsimport accuracy_score, confusion_matrix,
+ classification_report
+ #Loaddata
+ data =pd.read_csv('fraud_data.csv')
+ #Preprocess data
+X=data.drop('is_fraud',axis=1)
+ y=data['is_fraud']
+ X=pd.get_dummies(X,drop_first=True)
+ X.fillna(X.mean(),inplace=True)
+ #Train-testsplit
+ X_train,X_test,y_train,y_test=train_test_split(X,y,test_size=0.3,
+ random_state=42)
+ #TrainNaiveBayesclassifier
+ nb_classifier=GaussianNB()
+ nb_classifier.fit(X_train,y_train)
+ #Evaluatemodel
+ y_pred=nb_classifier.predict(X_test)
+ accuracy=accuracy_score(y_test,y_pred)
+ conf_matrix=confusion_matrix(y_test,y_pred)
+ class_report=classification_report(y_test,y_pred)
+ print(f'Accuracy:{accuracy:.2f}')
+ print('ConfusionMatrix:')
+ print(conf_matrix)
+ print('ClassificationReport:')
+ print(class_report)
+ ThiscodeprovidesaframeworktogetyoustartedwithNaiveBayesfor
+ frauddetection.
+ Output Theclassifierhasbeentrainedandevaluated.Here’ swhattheoutput
+ mightlooklikewithsomesampledata:
+ plaintext
+ Accuracy:0.85
+ ConfusionMatrix:
+ [[25545]
+ [35165]]
+ ClassificationReport:
+ precision recall f1-score support
+0 0.88 0.85 0.87 300
+ 1 0.79 0.83 0.81 200
+ accuracy 0.85 500
+ macroavg 0.84 0.84 0.84 500
+ weightedavg 0.85 0.85 0.85 500
+ ExplanationoftheOutput
+ Accuracy:
+ Accuracy:0.85
+ Thismeansthemodelcorrectlypredictedtheclass(fraudornot
+ fraud)for85%ofthetestinstances.
+ ConfusionMatrix:
+ [[25545][35165]]
+ Theconfusionmatrixshowsthenumberofcorrectandincorrect
+ predictionsforeachclass.
+ TrueNegatives(TN):255
+ FalsePositives(FP):45
+ FalseNegatives(FN):35
+ TruePositives(TP):165
+ ClassificationReport:
+ Theclassificationreportprovidesprecision,recall,andf1-scorefor
+ eachclass,aswellastheiraverages.
+ Precision:
+ Forclass0(notfraud):0.88
+ Forclass1(fraud):0.79
+ Recall:
+ Forclass0(notfraud):0.85
+ Forclass1(fraud):0.83
+ F1-score:
+ Forclass0(notfraud):0.87
+ Forclass1(fraud):0.81
+ Support:
+ Thenumberofactualoccurrencesofeachclassinthetestset.
+ Forclass0(notfraud):300
+For class1 (fraud): 200
+ Macro avg:
+ Average of theprecision, recall, and f1-score, weighted equally for
+ each class.
+ Weightedavg:
+ Average of theprecision, recall, and f1-score, weighted by the
+ numberofinstances in each class.
+ Thesemetrics providea comprehensiveviewofhowwell theNaiveBayes
+ classifier performs on your fraud detection task
