@@ -1,0 +1,198 @@
+Problem: Implement K-Nearest Neighbor algorithm to solve
+ classification problem.
+ 
+ Descriptive Explanation of K-Nearest Neighbors (KNN) Algorithm
+ K-Nearest Neighbors (KNN) is asimple, instance-basedlearning algorithm
+ used for both classification and regression tasks. It is a non-parametric
+ algorithm, which means it makes no explicit assumptions about the form
+ of thefunction used topredict theoutput.
+ Key Conceptsof KNN
+ Instance-Based Learning:
+ KNN is a lazy learner, meaning it doesn't learn a discriminative
+ function fromthetraining data but memorizes thetraining datasetinstead.
+ Distance Metric:
+ The algorithm relies on a distance metric to find the k-nearest
+ neighbors. Common distance metrics include Euclidean distance,
+ Manhattandistance, and Minkowski distance.
+ Euclidean Distance: d(x,y)=∑ i=1n(xi− yi)2d(x,y)=∑ i=1n (xi − yi 
+)2
+ yi ∣
+ Manhattan Distance: d(x,y)=∑ i=1n∣ xi− yi∣ d(x,y)=∑ i=1n ∣ xi −
+Classification:
+ For classification, KNN assigns the majority class among the
+ k-nearest neighbors to the querypoint.
+ Parameterk:
+ The parameter k determines the number of nearest neighbors to
+ consider. Choosing the right k value is crucial for the performance of the
+ algorithm.
+ Weighting Neighbors:
+ Optionally, KNN can weight the neighbors based on their distance to
+ the query point, giving closer neighbors more influence on the
+ classification decision.
+ Implementationof KNN forClassification
+ To illustrate the KNN algorithm, we will use the Iris dataset for a
+ classification task.
+ Stepsto ImplementKNN
+ Import Libraries
+ Load andExplore theDataset
+ Preprocess Data
+ Train-Test Split
+ Train KNNClassifier
+ Evaluate Model
+ ParameterTuning
+ 1. Import Libraries
+ python
+ import pandasaspd
+ fromsklearn.model_selectionimport train_test_split
+fromsklearn.neighbors import KNeighborsClassifier
+ from sklearn.metrics import accuracy_score, confusion_matrix,
+ classification_report
+ fromsklearn.datasets import load_iris
+ import matplotlib.pyplot as plt
+ fromsklearn.preprocessing import StandardScaler
+ 2. LoadandExplore theDataset
+ We' l usethe Irisdatasetforillustration.
+ python
+ #Loadthe dataset
+ iris = load_iris()
+ X=pd.DataFrame(iris.data,columns=iris.feature_names)
+ y =pd.Series(iris.target)
+ #Displaythe first fewrows of thedataset
+ print(X.head())
+ print(y.head())
+ 3. Preprocess Data
+ Scaling the features is important for KNNsinceitis distance-based.
+ python
+ #Initialize the scaler
+ scaler =StandardScaler()
+ #Fit and transformthefeatures
+ X_scaled = scaler.fit_transform(X)
+ 4. Train-Test Split
+Split the data into training and testing sets.
+ python
+ X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.3,
+ random_state=42)
+ 5. Train KNNClassifier
+ Train the KNN classifier withk=3 (asan example).
+ python
+ #Initialize the KNNclassifier
+ knn_model=KNeighborsClassifier(n_neighbors=3)
+ #Trainthe classifier
+ knn_model.fit(X_train, y_train)
+ 6. Evaluate Model
+ Evaluate the trained model on thetest set.
+ python
+ #Makepredictionsonthetestset
+ y_pred = knn_model.predict(X_test)
+ #Evaluatetheaccuracy
+ accuracy =accuracy_score(y_test,y_pred)
+ print(f'Accuracy: {accuracy:.2f}')
+ #Confusion matrix
+ conf_matrix = confusion_matrix(y_test, y_pred)
+ print('Confusion Matrix:')
+ print(conf_matrix)
+#Classification report
+ class_report = classification_report(y_test, y_pred)
+ print('Classification Report:')
+ print(class_report)
+ ParameterTuning
+ Tune theparameter k tofind thebest value.
+ python
+ #Initialize lists to store accuracy valuesfor different k
+ k_values = range(1, 11)
+ accuracies = []
+ for k in k_values:
+ knn_model =KNeighborsClassifier(n_neighbors=k)
+ knn_model.fit(X_train, y_train)
+ y_pred = knn_model.predict(X_test)
+ accuracy= accuracy_score(y_test, y_pred)
+ accuracies.append(accuracy)
+ #Plot theaccuracy values fordifferent k
+ plt.plot(k_values, accuracies, marker='o')
+ plt.xlabel('Number of Neighborsk')
+ plt.ylabel('Accuracy')
+ plt.title('KNN Accuracy for Different k Values')
+ plt.show()
+ Full ExampleCode
+ python
+ import pandasaspd
+ fromsklearn.model_selectionimport train_test_split
+fromsklearn.neighborsimportKNeighborsClassifier
+ from sklearn.metrics import accuracy_score, confusion_matrix,
+ classification_report
+ fromsklearn.datasetsimportload_iris
+ importmatplotlib.pyplotasplt
+ fromsklearn.preprocessingimportStandardScaler
+ #Loadthedataset
+ iris=load_iris()
+ X=pd.DataFrame(iris.data,columns=iris.feature_names)
+ y=pd.Series(iris.target)
+ #Preprocessdata:Scalingthefeatures
+ scaler=StandardScaler()
+ X_scaled=scaler.fit_transform(X)
+ #Train-testsplit
+ X_train,X_test, y_train,y_test=train_test_split(X_scaled,y, test_size=0.3,
+ random_state=42)
+ #TrainKNNclassifierwithk=3
+ knn_model=KNeighborsClassifier(n_neighbors=3)
+ knn_model.fit(X_train,y_train)
+ #Evaluatemodel
+ y_pred=knn_model.predict(X_test)
+ accuracy=accuracy_score(y_test,y_pred)
+ conf_matrix=confusion_matrix(y_test,y_pred)
+ class_report=classification_report(y_test,y_pred)
+ print(f'Accuracy:{accuracy:.2f}')
+ print('ConfusionMatrix:')
+ print(conf_matrix)
+ print('ClassificationReport:')
+ print(class_report)
+#Parametertuning:Findingthebestk
+ k_values=range(1,11)
+ accuracies=[]
+ forkink_values:
+ knn_model=KNeighborsClassifier(n_neighbors=k)
+ knn_model.fit(X_train,y_train)
+ y_pred=knn_model.predict(X_test)
+ accuracy=accuracy_score(y_test,y_pred)
+ accuracies.append(accuracy)
+ #Plottheaccuracyvaluesfordifferentk
+ plt.plot(k_values,accuracies,marker='o')
+ plt.xlabel('NumberofNeighborsk')
+ plt.ylabel('Accuracy')
+ plt.title('KNNAccuracyforDifferentkValues')
+ plt.show()
+ ExpectedOutput
+ Accuracy:
+ plaintext
+ Accuracy:1.00
+ ConfusionMatrix:
+ ConfusionMatrix:
+ [[1900]
+ [0110]
+ [0015]]
+ ClassificationReport:
+ plaintext
+ ClassificationReport:
+ precision recall f1-score support
+ 0 1.00 1.00 1.00 19
+ 1 1.00 1.00 1.00 11
+2 1.00 1.00 1.00 15
+ accuracy
+ 1.00
+ 45
+ macroavg 1.00 1.00 1.00 45
+ weighted avg
+ 1.00 1.00 1.00 45
+ :
+ Aplotshowingthe accuracyoftheKNN classifierfor differentvalues of k.
+ The plothelps to identifythe optimal k valuethat gives thebest accuracy.
+ Explanation
+ Accuracy: Indicates the percentage of correctly classified instances out
+ of thetotal instances.
+ Confusion Matrix: Provides a summary of prediction results on the
+ classification problem, showing the number of correct and incorrect
+ predictions for each class.
+ Classification Report: Includes precision, recal, and F1-score for each
+ class.
+ Parameter Tuning Plot: Visualizes the impact of different k values on
+ the model'saccuracy, helping to select the best k.
